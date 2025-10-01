@@ -1,4 +1,262 @@
 import React, { useEffect, useState } from 'react'
-import Head from 'next/head'
 
-interface SEOAuditProps {\n  showInProduction?: boolean\n}\n\ninterface SEOIssue {\n  type: 'error' | 'warning' | 'success'\n  message: string\n  element?: string\n}\n\nconst SEOAudit: React.FC<SEOAuditProps> = ({ showInProduction = false }) => {\n  const [issues, setIssues] = useState<SEOIssue[]>([])\n  const [isVisible, setIsVisible] = useState(false)\n\n  useEffect(() => {\n    // Only show in development or if explicitly enabled in production\n    if (process.env.NODE_ENV === 'development' || showInProduction) {\n      auditPage()\n    }\n  }, [])\n\n  const auditPage = () => {\n    const foundIssues: SEOIssue[] = []\n\n    // Check title tag\n    const title = document.querySelector('title')\n    if (!title || !title.textContent) {\n      foundIssues.push({\n        type: 'error',\n        message: 'Missing title tag',\n        element: 'title'\n      })\n    } else if (title.textContent.length < 30) {\n      foundIssues.push({\n        type: 'warning',\n        message: `Title too short (${title.textContent.length} chars). Recommended: 30-60 chars`,\n        element: 'title'\n      })\n    } else if (title.textContent.length > 60) {\n      foundIssues.push({\n        type: 'warning',\n        message: `Title too long (${title.textContent.length} chars). Recommended: 30-60 chars`,\n        element: 'title'\n      })\n    } else {\n      foundIssues.push({\n        type: 'success',\n        message: `Title length optimal (${title.textContent.length} chars)`,\n        element: 'title'\n      })\n    }\n\n    // Check meta description\n    const description = document.querySelector('meta[name=\"description\"]')\n    if (!description || !description.getAttribute('content')) {\n      foundIssues.push({\n        type: 'error',\n        message: 'Missing meta description',\n        element: 'meta[name=\"description\"]'\n      })\n    } else {\n      const descLength = description.getAttribute('content')!.length\n      if (descLength < 120) {\n        foundIssues.push({\n          type: 'warning',\n          message: `Meta description too short (${descLength} chars). Recommended: 120-160 chars`,\n          element: 'meta[name=\"description\"]'\n        })\n      } else if (descLength > 160) {\n        foundIssues.push({\n          type: 'warning',\n          message: `Meta description too long (${descLength} chars). Recommended: 120-160 chars`,\n          element: 'meta[name=\"description\"]'\n        })\n      } else {\n        foundIssues.push({\n          type: 'success',\n          message: `Meta description length optimal (${descLength} chars)`,\n          element: 'meta[name=\"description\"]'\n        })\n      }\n    }\n\n    // Check H1 tags\n    const h1Tags = document.querySelectorAll('h1')\n    if (h1Tags.length === 0) {\n      foundIssues.push({\n        type: 'error',\n        message: 'Missing H1 tag',\n        element: 'h1'\n      })\n    } else if (h1Tags.length > 1) {\n      foundIssues.push({\n        type: 'warning',\n        message: `Multiple H1 tags found (${h1Tags.length}). Recommended: 1 per page`,\n        element: 'h1'\n      })\n    } else {\n      foundIssues.push({\n        type: 'success',\n        message: 'Single H1 tag found',\n        element: 'h1'\n      })\n    }\n\n    // Check canonical URL\n    const canonical = document.querySelector('link[rel=\"canonical\"]')\n    if (!canonical) {\n      foundIssues.push({\n        type: 'error',\n        message: 'Missing canonical URL',\n        element: 'link[rel=\"canonical\"]'\n      })\n    } else {\n      foundIssues.push({\n        type: 'success',\n        message: 'Canonical URL present',\n        element: 'link[rel=\"canonical\"]'\n      })\n    }\n\n    // Check Open Graph tags\n    const ogTitle = document.querySelector('meta[property=\"og:title\"]')\n    const ogDescription = document.querySelector('meta[property=\"og:description\"]')\n    const ogImage = document.querySelector('meta[property=\"og:image\"]')\n    \n    if (!ogTitle || !ogDescription || !ogImage) {\n      foundIssues.push({\n        type: 'warning',\n        message: 'Incomplete Open Graph tags',\n        element: 'meta[property^=\"og:\"]'\n      })\n    } else {\n      foundIssues.push({\n        type: 'success',\n        message: 'Open Graph tags complete',\n        element: 'meta[property^=\"og:\"]'\n      })\n    }\n\n    // Check for schema markup\n    const schemaScripts = document.querySelectorAll('script[type=\"application/ld+json\"]')\n    if (schemaScripts.length === 0) {\n      foundIssues.push({\n        type: 'warning',\n        message: 'No structured data (schema.org) found',\n        element: 'script[type=\"application/ld+json\"]'\n      })\n    } else {\n      foundIssues.push({\n        type: 'success',\n        message: `${schemaScripts.length} structured data block(s) found`,\n        element: 'script[type=\"application/ld+json\"]'\n      })\n    }\n\n    // Check images for alt text\n    const images = document.querySelectorAll('img')\n    const imagesWithoutAlt = Array.from(images).filter(img => !img.getAttribute('alt'))\n    if (imagesWithoutAlt.length > 0) {\n      foundIssues.push({\n        type: 'warning',\n        message: `${imagesWithoutAlt.length} image(s) missing alt text`,\n        element: 'img'\n      })\n    } else if (images.length > 0) {\n      foundIssues.push({\n        type: 'success',\n        message: 'All images have alt text',\n        element: 'img'\n      })\n    }\n\n    setIssues(foundIssues)\n  }\n\n  // Don't render in production unless explicitly enabled\n  if (process.env.NODE_ENV === 'production' && !showInProduction) {\n    return null\n  }\n\n  const errorCount = issues.filter(i => i.type === 'error').length\n  const warningCount = issues.filter(i => i.type === 'warning').length\n  const successCount = issues.filter(i => i.type === 'success').length\n\n  return (\n    <>\n      {/* SEO Audit Toggle Button */}\n      <button\n        onClick={() => setIsVisible(!isVisible)}\n        className=\"fixed bottom-4 right-4 z-50 bg-sw-purple text-white p-3 rounded-full shadow-lg hover:bg-sw-purple-dark transition-colors\"\n        title=\"SEO Audit\"\n      >\n        <svg className=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n          <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z\" />\n        </svg>\n        {errorCount > 0 && (\n          <span className=\"absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center\">\n            {errorCount}\n          </span>\n        )}\n      </button>\n\n      {/* SEO Audit Panel */}\n      {isVisible && (\n        <div className=\"fixed bottom-20 right-4 z-50 bg-white border-2 border-gray-200 rounded-lg shadow-xl w-96 max-h-96 overflow-y-auto\">\n          <div className=\"p-4 border-b bg-sw-purple text-white\">\n            <div className=\"flex justify-between items-center\">\n              <h3 className=\"font-bold\">SEO Audit</h3>\n              <button\n                onClick={() => setIsVisible(false)}\n                className=\"text-white hover:text-gray-200\"\n              >\n                ×\n              </button>\n            </div>\n            <div className=\"flex gap-4 mt-2 text-sm\">\n              <span className=\"text-red-200\">Errors: {errorCount}</span>\n              <span className=\"text-yellow-200\">Warnings: {warningCount}</span>\n              <span className=\"text-green-200\">Passed: {successCount}</span>\n            </div>\n          </div>\n          \n          <div className=\"p-4 space-y-3\">\n            {issues.map((issue, index) => (\n              <div\n                key={index}\n                className={`p-3 rounded-lg border-l-4 ${\n                  issue.type === 'error'\n                    ? 'bg-red-50 border-red-400 text-red-800'\n                    : issue.type === 'warning'\n                    ? 'bg-yellow-50 border-yellow-400 text-yellow-800'\n                    : 'bg-green-50 border-green-400 text-green-800'\n                }`}\n              >\n                <div className=\"flex items-start gap-2\">\n                  <span className=\"text-xs font-mono bg-gray-100 px-2 py-1 rounded\">\n                    {issue.element}\n                  </span>\n                </div>\n                <p className=\"text-sm mt-1\">{issue.message}</p>\n              </div>\n            ))}\n          </div>\n          \n          <div className=\"p-4 border-t bg-gray-50\">\n            <button\n              onClick={auditPage}\n              className=\"w-full bg-sw-teal text-white py-2 px-4 rounded hover:bg-sw-teal-dark transition-colors\"\n            >\n              Re-run Audit\n            </button>\n          </div>\n        </div>\n      )}\n    </>\n  )\n}\n\nexport default SEOAudit
+interface SEOAuditProps {
+  showInProduction?: boolean
+}
+
+interface SEOIssue {
+  type: 'error' | 'warning' | 'success'
+  message: string
+  element?: string
+}
+
+const SEOAudit: React.FC<SEOAuditProps> = ({ showInProduction = false }) => {
+  const [issues, setIssues] = useState<SEOIssue[]>([])
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    // Only show in development or if explicitly enabled in production
+    if (process.env.NODE_ENV === 'development' || showInProduction) {
+      auditPage()
+    }
+  }, [])
+
+  const auditPage = () => {
+    const foundIssues: SEOIssue[] = []
+
+    // Check title tag
+    const title = document.querySelector('title')
+    if (!title || !title.textContent) {
+      foundIssues.push({
+        type: 'error',
+        message: 'Missing title tag',
+        element: 'title'
+      })
+    } else if (title.textContent.length < 30) {
+      foundIssues.push({
+        type: 'warning',
+        message: `Title too short (${title.textContent.length} chars). Recommended: 30-60 chars`,
+        element: 'title'
+      })
+    } else if (title.textContent.length > 60) {
+      foundIssues.push({
+        type: 'warning',
+        message: `Title too long (${title.textContent.length} chars). Recommended: 30-60 chars`,
+        element: 'title'
+      })
+    } else {
+      foundIssues.push({
+        type: 'success',
+        message: `Title length optimal (${title.textContent.length} chars)`,
+        element: 'title'
+      })
+    }
+
+    // Check meta description
+    const description = document.querySelector('meta[name="description"]')
+    if (!description || !description.getAttribute('content')) {
+      foundIssues.push({
+        type: 'error',
+        message: 'Missing meta description',
+        element: 'meta[name="description"]'
+      })
+    } else {
+      const descLength = description.getAttribute('content')!.length
+      if (descLength < 120) {
+        foundIssues.push({
+          type: 'warning',
+          message: `Meta description too short (${descLength} chars). Recommended: 120-160 chars`,
+          element: 'meta[name="description"]'
+        })
+      } else if (descLength > 160) {
+        foundIssues.push({
+          type: 'warning',
+          message: `Meta description too long (${descLength} chars). Recommended: 120-160 chars`,
+          element: 'meta[name="description"]'
+        })
+      } else {
+        foundIssues.push({
+          type: 'success',
+          message: `Meta description length optimal (${descLength} chars)`,
+          element: 'meta[name="description"]'
+        })
+      }
+    }
+
+    // Check H1 tags
+    const h1Tags = document.querySelectorAll('h1')
+    if (h1Tags.length === 0) {
+      foundIssues.push({
+        type: 'error',
+        message: 'Missing H1 tag',
+        element: 'h1'
+      })
+    } else if (h1Tags.length > 1) {
+      foundIssues.push({
+        type: 'warning',
+        message: `Multiple H1 tags found (${h1Tags.length}). Recommended: 1 per page`,
+        element: 'h1'
+      })
+    } else {
+      foundIssues.push({
+        type: 'success',
+        message: 'Single H1 tag found',
+        element: 'h1'
+      })
+    }
+
+    // Check canonical URL
+    const canonical = document.querySelector('link[rel="canonical"]')
+    if (!canonical) {
+      foundIssues.push({
+        type: 'error',
+        message: 'Missing canonical URL',
+        element: 'link[rel="canonical"]'
+      })
+    } else {
+      foundIssues.push({
+        type: 'success',
+        message: 'Canonical URL present',
+        element: 'link[rel="canonical"]'
+      })
+    }
+
+    // Check Open Graph tags
+    const ogTitle = document.querySelector('meta[property="og:title"]')
+    const ogDescription = document.querySelector('meta[property="og:description"]')
+    const ogImage = document.querySelector('meta[property="og:image"]')
+    
+    if (!ogTitle || !ogDescription || !ogImage) {
+      foundIssues.push({
+        type: 'warning',
+        message: 'Incomplete Open Graph tags',
+        element: 'meta[property^="og:"]'
+      })
+    } else {
+      foundIssues.push({
+        type: 'success',
+        message: 'Open Graph tags complete',
+        element: 'meta[property^="og:"]'
+      })
+    }
+
+    // Check for schema markup
+    const schemaScripts = document.querySelectorAll('script[type="application/ld+json"]')
+    if (schemaScripts.length === 0) {
+      foundIssues.push({
+        type: 'warning',
+        message: 'No structured data (schema.org) found',
+        element: 'script[type="application/ld+json"]'
+      })
+    } else {
+      foundIssues.push({
+        type: 'success',
+        message: `${schemaScripts.length} structured data block(s) found`,
+        element: 'script[type="application/ld+json"]'
+      })
+    }
+
+    // Check images for alt text
+    const images = document.querySelectorAll('img')
+    const imagesWithoutAlt = Array.from(images).filter(img => !img.getAttribute('alt'))
+    if (imagesWithoutAlt.length > 0) {
+      foundIssues.push({
+        type: 'warning',
+        message: `${imagesWithoutAlt.length} image(s) missing alt text`,
+        element: 'img'
+      })
+    } else if (images.length > 0) {
+      foundIssues.push({
+        type: 'success',
+        message: 'All images have alt text',
+        element: 'img'
+      })
+    }
+
+    setIssues(foundIssues)
+  }
+
+  // Don't render in production unless explicitly enabled
+  if (process.env.NODE_ENV === 'production' && !showInProduction) {
+    return null
+  }
+
+  const errorCount = issues.filter(i => i.type === 'error').length
+  const warningCount = issues.filter(i => i.type === 'warning').length
+  const successCount = issues.filter(i => i.type === 'success').length
+
+  return (
+    <>
+      {/* SEO Audit Toggle Button */}
+      <button
+        onClick={() => setIsVisible(!isVisible)}
+        className="fixed bottom-4 right-4 z-50 bg-sw-purple text-white p-3 rounded-full shadow-lg hover:bg-sw-purple-dark transition-colors"
+        title="SEO Audit"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        {errorCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            {errorCount}
+          </span>
+        )}
+      </button>
+
+      {/* SEO Audit Panel */}
+      {isVisible && (
+        <div className="fixed bottom-20 right-4 z-50 bg-white border-2 border-gray-200 rounded-lg shadow-xl w-96 max-h-96 overflow-y-auto">
+          <div className="p-4 border-b bg-sw-purple text-white">
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold">SEO Audit</h3>
+              <button
+                onClick={() => setIsVisible(false)}
+                className="text-white hover:text-gray-200"
+              >
+                ×
+              </button>
+            </div>
+            <div className="flex gap-4 mt-2 text-sm">
+              <span className="text-red-200">Errors: {errorCount}</span>
+              <span className="text-yellow-200">Warnings: {warningCount}</span>
+              <span className="text-green-200">Passed: {successCount}</span>
+            </div>
+          </div>
+          
+          <div className="p-4 space-y-3">
+            {issues.map((issue, index) => (
+              <div
+                key={index}
+                className={`p-3 rounded-lg border-l-4 ${
+                  issue.type === 'error'
+                    ? 'bg-red-50 border-red-400 text-red-800'
+                    : issue.type === 'warning'
+                    ? 'bg-yellow-50 border-yellow-400 text-yellow-800'
+                    : 'bg-green-50 border-green-400 text-green-800'
+                }`}
+              >
+                <div className="flex items-start gap-2">
+                  <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                    {issue.element}
+                  </span>
+                </div>
+                <p className="text-sm mt-1">{issue.message}</p>
+              </div>
+            ))}
+          </div>
+          
+          <div className="p-4 border-t bg-gray-50">
+            <button
+              onClick={auditPage}
+              className="w-full bg-sw-teal text-white py-2 px-4 rounded hover:bg-sw-teal-dark transition-colors"
+            >
+              Re-run Audit
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+export default SEOAudit
