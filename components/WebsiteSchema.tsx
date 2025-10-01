@@ -9,7 +9,7 @@ const WebsiteSchema: React.FC<WebsiteSchemaProps> = ({ searchAction = true }) =>
   const router = useRouter()
   
   // Generate comprehensive website schema
-  const websiteSchema = {
+  const websiteSchema: any = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "SafetyWingHub",
@@ -45,7 +45,7 @@ const WebsiteSchema: React.FC<WebsiteSchemaProps> = ({ searchAction = true }) =>
 
   // Add search action if enabled
   if (searchAction) {
-    websiteSchema["potentialAction"] = {
+    websiteSchema.potentialAction = {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
