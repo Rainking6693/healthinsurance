@@ -9,7 +9,7 @@ interface HeroBannerProps {
   ctaLink?: string
   secondaryCtaText?: string
   secondaryCtaLink?: string
-  backgroundGradient?: 'blue' | 'purple' | 'teal'
+  backgroundGradient?: 'blue' | 'purple' | 'teal' | 'coral'
   showLogo?: boolean
 }
 
@@ -27,6 +27,7 @@ const HeroBanner: React.FC<HeroBannerProps> = ({
     blue: 'bg-gradient-to-br from-sw-blue to-sw-teal',
     purple: 'bg-gradient-to-br from-sw-purple to-sw-purple-light',
     teal: 'bg-gradient-to-br from-sw-teal to-sw-mint',
+    coral: 'bg-gradient-to-br from-sw-coral to-sw-coral-dark',
   }
 
   return (
