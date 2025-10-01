@@ -3,6 +3,8 @@ import Layout from '@/components/Layout/Layout'
 import HeroBanner from '@/components/HeroBanner'
 import FeatureCard from '@/components/FeatureCard'
 import Button from '@/components/Button'
+import FAQ from '@/components/FAQ'
+import TestimonialSection from '@/components/TestimonialSection'
 import { AFFILIATE_LINKS, BLOG_POSTS } from '@/config/links'
 import Link from 'next/link'
 
@@ -51,20 +53,64 @@ const Home: NextPage = () => {
       quote: "SafetyWing saved me $3,000+ when I sprained my ankle hiking. The claims process was smooth and they paid within 3 weeks.",
       author: "Sarah K.",
       role: "Freelance Designer",
+      rating: 5,
+      location: "Austin, TX",
+      verified: true
     },
     {
       quote: "As a DoorDash driver, I couldn't afford $400/month for marketplace insurance. SafetyWing gives me peace of mind for $42.",
       author: "Mike T.",
       role: "Gig Worker",
+      rating: 5,
+      location: "Denver, CO",
+      verified: true
     },
     {
       quote: "I travel between countries for work. SafetyWing covers me everywhere, unlike traditional U.S. insurance.",
       author: "Jennifer L.",
       role: "Digital Nomad",
+      rating: 4,
+      location: "Remote",
+      verified: true
     },
   ]
 
   const featuredPosts = BLOG_POSTS.filter(post => post.featured).slice(0, 3)
+
+  const faqItems = [
+    {
+      question: "How much does SafetyWing cost for gig workers?",
+      answer: "SafetyWing Nomad Insurance costs $42.16/month for most people under 40. The price increases with age, with those 40-49 paying around $80-100/month, and those 50-59 paying $150-180/month. Children under 10 are covered for free (up to 2 kids)."
+    },
+    {
+      question: "Does SafetyWing cover pre-existing conditions?",
+      answer: "The Essential plan does not cover pre-existing conditions. However, SafetyWing's Complete plan (available in some countries) may provide limited coverage for pre-existing conditions after a waiting period. Always check the policy details for your specific situation."
+    },
+    {
+      question: "Can I use SafetyWing in my home country?",
+      answer: "Yes, but with limitations. The Essential plan covers you for 30 days per visit to your home country, while the Complete plan covers 90 days per visit. This makes it ideal for digital nomads who travel frequently but occasionally return home."
+    },
+    {
+      question: "Is SafetyWing real insurance or just travel insurance?",
+      answer: "SafetyWing is real insurance that provides medical coverage for emergencies, accidents, and sudden illnesses. While it's designed for travelers and nomads, it functions as legitimate health insurance with a $250 deductible and up to $250,000 in coverage."
+    },
+    {
+      question: "How do I file a claim with SafetyWing?",
+      answer: "Claims are filed online through SafetyWing's member portal. You'll need to upload your medical bills, receipts, and any relevant documentation. Most claims are processed within 2-4 weeks, and reimbursements are sent via bank transfer or check."
+    },
+    {
+      question: "Can DoorDash and Uber drivers use SafetyWing?",
+      answer: "Absolutely! SafetyWing is perfect for gig workers like DoorDash drivers, Uber drivers, and other delivery workers who need affordable health coverage. At $42/month, it's much cheaper than marketplace plans and provides real emergency coverage."
+    },
+    {
+      question: "What's not covered by SafetyWing?",
+      answer: "SafetyWing doesn't cover routine check-ups, preventive care, elective procedures, pregnancy/maternity, mental health (limited coverage), or non-emergency dental care. It's designed for emergency medical situations, not comprehensive healthcare."
+    },
+    {
+      question: "Can I cancel SafetyWing anytime?",
+      answer: "Yes! SafetyWing operates on a monthly subscription model with no annual commitment. You can cancel anytime without penalties or fees, making it perfect for freelancers with variable income."
+    }
+  ]
 
   return (
     <Layout
@@ -187,31 +233,7 @@ const Home: NextPage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="sw-section">
-        <div className="sw-container">
-          <div className="text-center mb-12">
-            <h2 className="sw-h2 text-sw-navy mb-4">What Our Community Says</h2>
-            <p className="sw-body text-sw-gray max-w-3xl mx-auto">
-              Real stories from freelancers and gig workers who found affordable coverage with SafetyWing.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white border-2 border-sw-gray-light rounded-2xl p-8">
-                <svg className="w-10 h-10 text-sw-teal mb-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                </svg>
-                <p className="text-sw-gray mb-6 italic">"{testimonial.quote}"</p>
-                <div className="border-t pt-4">
-                  <p className="font-semibold text-sw-navy">{testimonial.author}</p>
-                  <p className="text-sw-gray text-sm">{testimonial.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialSection testimonials={testimonials} />
 
       {/* Blog Preview Section */}
       <section className="sw-section bg-sw-gray-light">
@@ -249,6 +271,13 @@ const Home: NextPage = () => {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <FAQ 
+        items={faqItems}
+        title="Common Questions About Health Insurance for Gig Workers"
+        className="sw-section"
+      />
 
       {/* CTA Section */}
       <section className="sw-section bg-gradient-to-br from-sw-purple to-sw-purple-light">

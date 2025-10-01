@@ -13,12 +13,31 @@ const Navigation: React.FC = () => {
     { label: 'Resources', href: INTERNAL_LINKS.toolkit },
   ]
 
+  const megaMenuItems = [
+    {
+      category: 'By Worker Type',
+      links: [
+        { label: 'DoorDash Drivers', href: '/doordash-health-insurance' },
+        { label: 'Uber Drivers', href: '/uber-driver-health-insurance' },
+        { label: 'Freelance Writers', href: '/freelance-writer-health-insurance' },
+      ]
+    },
+    {
+      category: 'Tools & Guides',
+      links: [
+        { label: 'Cost Calculator', href: '/health-insurance-cost-calculator' },
+        { label: 'How-To Guide', href: '/how-to-get-health-insurance-gig-worker' },
+        { label: 'Comparison Guide', href: '/safetywing-vs-marketplace-insurance' },
+      ]
+    }
+  ]
+
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
+    <nav className="bg-white shadow-sm sticky top-0 z-50" role="navigation" aria-label="Main navigation">
       <div className="sw-container">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center" aria-label="SafetyWingHub Home">
             <span className="text-2xl font-bold text-sw-purple">
               SafetyWing<span className="text-sw-teal">Hub</span>
             </span>
@@ -46,10 +65,11 @@ const Navigation: React.FC = () => {
           </div>
 
           {/* Mobile menu button */}
-          <button
+            <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-sw-navy hover:text-sw-teal hover:bg-sw-gray-light focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sw-teal"
-            aria-expanded="false"
+            aria-expanded={isMobileMenuOpen}
+            aria-label="Toggle mobile menu"
           >
             <span className="sr-only">Open main menu</span>
             {/* Hamburger icon */}
@@ -92,18 +112,42 @@ const Navigation: React.FC = () => {
 
       {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden">
+        <div className="md:hidden" role="menu">
           <div className="px-2 pt-2 pb-3 space-y-1">
+            {/* Main Navigation */}
             {navItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 className="block px-3 py-2 rounded-md text-base font-medium text-sw-navy hover:text-sw-teal hover:bg-sw-gray-light"
                 onClick={() => setIsMobileMenuOpen(false)}
+                role="menuitem"
               >
                 {item.label}
               </Link>
             ))}
+            
+            {/* Mobile Mega Menu Items */}
+            <div className="border-t border-sw-gray-light mt-4 pt-4">
+              {megaMenuItems.map((category) => (
+                <div key={category.category} className="mb-4">
+                  <h3 className="px-3 py-2 text-sm font-semibold text-sw-navy uppercase tracking-wider">
+                    {category.category}
+                  </h3>
+                  {category.links.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="block px-3 py-2 text-sm text-sw-gray hover:text-sw-teal hover:bg-sw-gray-light"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      role="menuitem"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
             <div className="px-3 py-2">
               <Button
                 variant="primary"

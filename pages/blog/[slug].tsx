@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import Layout from '@/components/Layout/Layout'
 import Button from '@/components/Button'
+import Breadcrumb from '@/components/Breadcrumb'
 import Link from 'next/link'
 import { AFFILIATE_LINKS, BLOG_POSTS } from '@/config/links'
 import { blogPostsContent } from '@/data/blog/posts'
@@ -20,22 +21,43 @@ interface BlogPostProps {
 }
 
 const BlogPost: NextPage<BlogPostProps> = ({ post, relatedPosts }) => {
+  // Convert date to ISO format for schema
+  const publishedTime = new Date(post.date).toISOString()
+  const modifiedTime = new Date(post.date).toISOString() // Use same date if no modified date
+  
   return (
     <Layout
       title={`${post.title} | SafetyWingHub`}
       description={post.excerpt}
+      articleData={{
+        author: post.author,
+        publishedTime,
+        modifiedTime,
+        section: 'Health Insurance',
+        tags: ['health insurance', 'gig workers', 'freelancers', 'digital nomads', 'safetywing']
+      }}
     >
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb 
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Blog', href: '/blog' },
+          { label: post.title, href: `/blog/${post.slug}` }
+        ]}
+        className="bg-sw-gray-light"
+      />
+      
       {/* Article Header */}
       <article className="min-h-screen bg-white">
         <header className="bg-gradient-to-br from-sw-purple to-sw-purple-light text-white py-16">
           <div className="sw-container-narrow">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">{post.title}</h1>
             <div className="flex items-center gap-4 text-white/80">
-              <span>{post.date}</span>
+              <time dateTime={publishedTime}>{post.date}</time>
               <span>•</span>
               <span>{post.readTime} min read</span>
               <span>•</span>
-              <span>By {post.author}</span>
+              <span>By <span itemProp="author">{post.author}</span></span>
             </div>
           </div>
         </header>

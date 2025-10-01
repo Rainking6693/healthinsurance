@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Layout from '@/components/Layout/Layout'
 import Button from '@/components/Button'
+import Breadcrumb from '@/components/Breadcrumb'
 import { AFFILIATE_LINKS, BLOG_POSTS } from '@/config/links'
 import Link from 'next/link'
 
@@ -10,6 +11,9 @@ const BlogIndex: NextPage = () => {
       title="Blog - Health Insurance Guides for Gig Workers & Freelancers"
       description="Expert guides and resources on finding affordable health insurance as a gig worker, freelancer, or digital nomad. Compare plans and save money."
     >
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb className="bg-sw-gray-light" />
+      
       {/* Header Section */}
       <section className="bg-gradient-to-br from-sw-purple to-sw-purple-light text-white py-16">
         <div className="sw-container text-center">
