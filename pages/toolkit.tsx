@@ -285,20 +285,15 @@ Next step: Send them the toolkit files.`
                       <span className="ml-auto text-sw-yellow">Download PDF →</span>
                     </a>
 
-                    {/* Google Sheet - Make a Copy */}
-                    <a
-                      href="https://docs.google.com/spreadsheets/d/1k34MU0EnCIAnmFLwHLX9pT3DgOoG8u1nLnPOFw6yiM/copy"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-4 p-4 bg-sw-blue text-white rounded-lg hover:bg-sw-blue-light transition-all"
-                    >
+                    {/* Google Sheet - Coming Soon */}
+                    <div className="flex items-center gap-4 p-4 bg-gray-100 border-2 border-gray-300 rounded-lg">
                       <span className="text-3xl">📊</span>
                       <div>
-                        <p className="font-bold">Income Assessment Calculator</p>
-                        <p className="text-sm opacity-90">Google Sheets - Make your own copy</p>
+                        <p className="font-bold text-gray-700">Income Assessment Calculator</p>
+                        <p className="text-sm text-gray-500">Google Sheets calculator - Coming Soon!</p>
                       </div>
-                      <span className="ml-auto">Open →</span>
-                    </a>
+                      <span className="ml-auto text-gray-500">Coming Soon</span>
+                    </div>
 
                     <div className="mt-6 pt-6 border-t border-sw-gray-light text-center">
                       <p className="text-sm text-sw-gray mb-4">
@@ -396,20 +391,15 @@ Next step: Send them the toolkit files.`
                 </div>
 
                 {/* Calculator Preview */}
-                <div className="border-2 border-sw-blue rounded-xl p-6">
+                <div className="border-2 border-gray-300 rounded-xl p-6">
                   <div className="text-4xl mb-4">📊</div>
                   <h4 className="font-bold text-lg mb-2">Income Calculator</h4>
                   <p className="text-sm text-sw-gray mb-4">
                     Assess your income and insurance options
                   </p>
-                  <a
-                    href="https://docs.google.com/spreadsheets/d/1k34MU0EnCIAnmFLwHLX9pT3DgOoG8u1nLnPOFw6yiM/edit"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sw-blue font-semibold hover:underline"
-                  >
-                    Preview Sheet →
-                  </a>
+                  <span className="text-gray-500 font-semibold">
+                    Coming Soon →
+                  </span>
                 </div>
               </div>
             </div>
