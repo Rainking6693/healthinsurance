@@ -13,6 +13,7 @@ interface ButtonProps {
   className?: string
   target?: string
   rel?: string
+  type?: 'button' | 'submit' | 'reset'
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -26,6 +27,7 @@ const Button: React.FC<ButtonProps> = ({
   className = '',
   target,
   rel,
+  type = 'button',
 }) => {
   const baseClasses = `
     font-bold rounded-lg transition-all duration-300
@@ -90,6 +92,7 @@ const Button: React.FC<ButtonProps> = ({
   // Button without link
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className={classes}
