@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /api/
-
-# Sitemap location
-Sitemap: https://safetywinghub.com/sitemap.xml
-
-# Crawl delay for bots
-Crawl-delay: 1
