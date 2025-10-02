@@ -1,9 +1,40 @@
 import type { NextPage } from 'next'
+import { useState } from 'react'
 import Layout from '@/components/Layout/Layout'
 import Button from '@/components/Button'
 import { AFFILIATE_LINKS } from '@/config/links'
 
 const Toolkit: NextPage = () => {
+  const [showDownloads, setShowDownloads] = useState(false)
+  const [userEmail, setUserEmail] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const email = formData.get('email') as string
+    const firstName = formData.get('firstName') as string
+    const workType = formData.get('workType') as string
+
+    // Send notification email
+    const subject = `New Toolkit Download: ${email}`
+    const body = `New user signed up!
+
+Email: ${email}
+Name: ${firstName}
+Work Type: ${workType}
+Date: ${new Date().toLocaleString()}
+Page: /toolkit
+
+Next step: Send them the toolkit files.`
+
+    // Open mailto link
+    window.location.href = `mailto:rainking6693@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+
+    // Show success state with download links
+    setShowDownloads(true)
+    setUserEmail(email)
+  }
+
   return (
     <Layout
       title="Free Gig Worker's Insurance Toolkit - Compare Your Options"
@@ -38,31 +69,17 @@ const Toolkit: NextPage = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-sw-navy mb-2">
-                      Insurance Comparison Calculator
+                      Income Assessment Calculator
                     </h3>
                     <p className="text-sw-gray">
-                      Side-by-side comparison of SafetyWing, marketplace plans, and other options with real costs
+                      Google Sheets calculator to assess your income and find the best insurance options
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="bg-sw-teal text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 font-bold">
+                  <div className="bg-sw-coral text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 font-bold">
                     2
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-sw-navy mb-2">
-                      Income & Subsidy Worksheet
-                    </h3>
-                    <p className="text-sw-gray">
-                      Calculate if you qualify for marketplace subsidies or Medicaid based on your gig income
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="bg-sw-teal text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 font-bold">
-                    3
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-sw-navy mb-2">
@@ -75,8 +92,8 @@ const Toolkit: NextPage = () => {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="bg-sw-teal text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 font-bold">
-                    4
+                  <div className="bg-sw-yellow text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 font-bold">
+                    3
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-sw-navy mb-2">
@@ -89,15 +106,15 @@ const Toolkit: NextPage = () => {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="bg-sw-teal text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 font-bold">
-                    5
+                  <div className="bg-sw-blue text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 font-bold">
+                    4
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-sw-navy mb-2">
-                      Quick Reference Cards
+                      Action Plan Worksheet
                     </h3>
                     <p className="text-sw-gray">
-                      Key terms explained, important deadlines, and phone numbers you need
+                      Your personalized checklist to get covered quickly and efficiently
                     </p>
                   </div>
                 </div>
@@ -125,99 +142,186 @@ const Toolkit: NextPage = () => {
               </div>
             </div>
 
-            {/* Right Column - Opt-in Form */}
+            {/* Right Column - Form or Downloads */}
             <div className="lg:sticky lg:top-24">
-              <div className="bg-white border-2 border-sw-teal rounded-2xl p-8 shadow-xl">
-                <h3 className="text-2xl font-bold text-sw-navy mb-2 text-center">
-                  Get Your Free Toolkit
-                </h3>
-                <p className="text-sw-gray text-center mb-6">
-                  Join 5,000+ gig workers who've already downloaded it
-                </p>
-
-                {/* Email Form (placeholder - will need ConvertKit integration) */}
-                <form className="space-y-4">
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-semibold text-sw-navy mb-2">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      id="firstName"
-                      name="firstName"
-                      className="w-full px-4 py-3 border-2 border-sw-gray-light rounded-lg focus:border-sw-teal focus:outline-none transition-colors"
-                      placeholder="Your first name"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-semibold text-sw-navy mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      className="w-full px-4 py-3 border-2 border-sw-gray-light rounded-lg focus:border-sw-teal focus:outline-none transition-colors"
-                      placeholder="you@example.com"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="workType" className="block text-sm font-semibold text-sw-navy mb-2">
-                      I'm a... (optional)
-                    </label>
-                    <select
-                      id="workType"
-                      name="workType"
-                      className="w-full px-4 py-3 border-2 border-sw-gray-light rounded-lg focus:border-sw-teal focus:outline-none transition-colors"
-                    >
-                      <option value="">Select one...</option>
-                      <option value="freelancer">Freelancer</option>
-                      <option value="gigworker">Gig Worker (Uber, DoorDash, etc.)</option>
-                      <option value="nomad">Digital Nomad</option>
-                      <option value="between">Between Jobs</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-
-                  <Button
-                    variant="secondary"
-                    size="lg"
-                    className="w-full"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      alert('Email form integration coming soon! For now, email us at hello@safetywinghub.com')
-                    }}
-                  >
-                    Send Me the Free Toolkit
-                  </Button>
-
-                  <p className="text-xs text-sw-gray text-center">
-                    We respect your privacy. Unsubscribe at any time.
+              {!showDownloads ? (
+                /* Email Form */
+                <div className="bg-white border-2 border-sw-teal rounded-2xl p-8 shadow-xl">
+                  <h3 className="text-2xl font-bold text-sw-navy mb-2 text-center">
+                    Get Your Free Toolkit
+                  </h3>
+                  <p className="text-sw-gray text-center mb-6">
+                    Join 5,000+ gig workers who've already downloaded it
                   </p>
-                </form>
 
-                {/* Trust Badges */}
-                <div className="mt-6 pt-6 border-t border-sw-gray-light">
-                  <div className="flex justify-center items-center gap-6 text-sw-gray">
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-sw-navy">5,000+</p>
-                      <p className="text-sm">Downloads</p>
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <label htmlFor="firstName" className="block text-sm font-semibold text-sw-navy mb-2">
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        className="w-full px-4 py-3 border-2 border-sw-gray-light rounded-lg focus:border-sw-teal focus:outline-none transition-colors"
+                        placeholder="Your first name"
+                        required
+                      />
                     </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-sw-navy">100%</p>
-                      <p className="text-sm">Free</p>
+
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-semibold text-sw-navy mb-2">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        className="w-full px-4 py-3 border-2 border-sw-gray-light rounded-lg focus:border-sw-teal focus:outline-none transition-colors"
+                        placeholder="you@example.com"
+                        required
+                      />
                     </div>
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-sw-navy">30 min</p>
-                      <p className="text-sm">To Decide</p>
+
+                    <div>
+                      <label htmlFor="workType" className="block text-sm font-semibold text-sw-navy mb-2">
+                        I'm a... (optional)
+                      </label>
+                      <select
+                        id="workType"
+                        name="workType"
+                        className="w-full px-4 py-3 border-2 border-sw-gray-light rounded-lg focus:border-sw-teal focus:outline-none transition-colors"
+                      >
+                        <option value="">Select one...</option>
+                        <option value="freelancer">Freelancer</option>
+                        <option value="gigworker">Gig Worker (Uber, DoorDash, etc.)</option>
+                        <option value="nomad">Digital Nomad</option>
+                        <option value="between">Between Jobs</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+
+                    <Button
+                      variant="secondary"
+                      size="lg"
+                      className="w-full"
+                      type="submit"
+                    >
+                      Send Me the Free Toolkit
+                    </Button>
+
+                    <p className="text-xs text-sw-gray text-center">
+                      We respect your privacy. Unsubscribe at any time.
+                    </p>
+                  </form>
+
+                  {/* Trust Badges */}
+                  <div className="mt-6 pt-6 border-t border-sw-gray-light">
+                    <div className="flex justify-center items-center gap-6 text-sw-gray">
+                      <div className="text-center">
+                        <p className="text-2xl font-bold text-sw-navy">5,000+</p>
+                        <p className="text-sm">Downloads</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-2xl font-bold text-sw-navy">100%</p>
+                        <p className="text-sm">Free</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-2xl font-bold text-sw-navy">30 min</p>
+                        <p className="text-sm">To Decide</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                /* Download Links */
+                <div className="bg-white border-2 border-sw-teal rounded-2xl p-8 shadow-xl">
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-bold text-sw-navy mb-6 text-center">
+                      🎉 Your Toolkit is Ready!
+                    </h3>
+                    
+                    <p className="text-center text-sw-gray mb-6">
+                      Thanks {userEmail}! Your toolkit files are ready to download:
+                    </p>
+
+                    {/* PDF Downloads */}
+                    <a
+                      href="/toolkit/tax-deduction-guide.pdf"
+                      download
+                      className="flex items-center gap-4 p-4 bg-white border-2 border-sw-coral rounded-lg hover:shadow-lg transition-all"
+                    >
+                      <span className="text-3xl">📄</span>
+                      <div>
+                        <p className="font-bold text-sw-navy">Tax Deduction Guide</p>
+                        <p className="text-sm text-sw-gray">Learn how to deduct 100% of premiums</p>
+                      </div>
+                      <span className="ml-auto text-sw-coral">Download PDF →</span>
+                    </a>
+
+                    <a
+                      href="/toolkit/decision-framework.pdf"
+                      download
+                      className="flex items-center gap-4 p-4 bg-white border-2 border-sw-teal rounded-lg hover:shadow-lg transition-all"
+                    >
+                      <span className="text-3xl">📋</span>
+                      <div>
+                        <p className="font-bold text-sw-navy">Decision Framework</p>
+                        <p className="text-sm text-sw-gray">Step-by-step guide to choose coverage</p>
+                      </div>
+                      <span className="ml-auto text-sw-teal">Download PDF →</span>
+                    </a>
+
+                    <a
+                      href="/toolkit/action-plan.pdf"
+                      download
+                      className="flex items-center gap-4 p-4 bg-white border-2 border-sw-yellow rounded-lg hover:shadow-lg transition-all"
+                    >
+                      <span className="text-3xl">✅</span>
+                      <div>
+                        <p className="font-bold text-sw-navy">Action Plan Worksheet</p>
+                        <p className="text-sm text-sw-gray">Your personalized checklist</p>
+                      </div>
+                      <span className="ml-auto text-sw-yellow">Download PDF →</span>
+                    </a>
+
+                    {/* Google Sheet - Make a Copy */}
+                    <a
+                      href="https://docs.google.com/spreadsheets/d/1k34MU0EnCIAnmFLwHLX9pT3DgOoG8u1nLnPOFw6yiM/copy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-4 p-4 bg-sw-blue text-white rounded-lg hover:bg-sw-blue-light transition-all"
+                    >
+                      <span className="text-3xl">📊</span>
+                      <div>
+                        <p className="font-bold">Income Assessment Calculator</p>
+                        <p className="text-sm opacity-90">Google Sheets - Make your own copy</p>
+                      </div>
+                      <span className="ml-auto">Open →</span>
+                    </a>
+
+                    <div className="mt-6 pt-6 border-t border-sw-gray-light text-center">
+                      <p className="text-sm text-sw-gray mb-4">
+                        Need help? Email us at hello@safetywinghub.com
+                      </p>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowDownloads(false)}
+                        className="mr-4"
+                      >
+                        Download Again
+                      </Button>
+                      <Button
+                        variant="primary"
+                        href={AFFILIATE_LINKS.nomadInsurance}
+                        isAffiliate
+                      >
+                        Get SafetyWing Now
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Alternative CTA */}
               <div className="mt-8 text-center">
@@ -242,32 +346,70 @@ const Toolkit: NextPage = () => {
             </h2>
             
             <div className="bg-gradient-to-br from-sw-gray-light to-white rounded-2xl p-8 border-2 border-sw-gray-light">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white rounded-lg p-4 shadow-md">
-                  <div className="bg-sw-teal h-32 rounded mb-4 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <p className="text-center font-semibold text-sw-navy">Comparison Calculator</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Tax Deduction Guide Preview */}
+                <div className="border-2 border-sw-coral rounded-xl p-6">
+                  <div className="text-4xl mb-4">📄</div>
+                  <h4 className="font-bold text-lg mb-2">Tax Deduction Guide</h4>
+                  <p className="text-sm text-sw-gray mb-4">
+                    Learn how to deduct health insurance premiums
+                  </p>
+                  <a
+                    href="/toolkit/tax-deduction-guide.pdf"
+                    target="_blank"
+                    className="text-sw-coral font-semibold hover:underline"
+                  >
+                    Preview PDF →
+                  </a>
                 </div>
-                
-                <div className="bg-white rounded-lg p-4 shadow-md">
-                  <div className="bg-sw-coral h-32 rounded mb-4 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <p className="text-center font-semibold text-sw-navy">Tax Guide</p>
+
+                {/* Decision Framework Preview */}
+                <div className="border-2 border-sw-teal rounded-xl p-6">
+                  <div className="text-4xl mb-4">📋</div>
+                  <h4 className="font-bold text-lg mb-2">Decision Framework</h4>
+                  <p className="text-sm text-sw-gray mb-4">
+                    Step-by-step guide to choose the right coverage
+                  </p>
+                  <a
+                    href="/toolkit/decision-framework.pdf"
+                    target="_blank"
+                    className="text-sw-teal font-semibold hover:underline"
+                  >
+                    Preview PDF →
+                  </a>
                 </div>
-                
-                <div className="bg-white rounded-lg p-4 shadow-md">
-                  <div className="bg-sw-blue h-32 rounded mb-4 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                    </svg>
-                  </div>
-                  <p className="text-center font-semibold text-sw-navy">Decision Framework</p>
+
+                {/* Action Plan Preview */}
+                <div className="border-2 border-sw-yellow rounded-xl p-6">
+                  <div className="text-4xl mb-4">✅</div>
+                  <h4 className="font-bold text-lg mb-2">Action Plan</h4>
+                  <p className="text-sm text-sw-gray mb-4">
+                    Your personalized checklist to get covered
+                  </p>
+                  <a
+                    href="/toolkit/action-plan.pdf"
+                    target="_blank"
+                    className="text-sw-yellow font-semibold hover:underline"
+                  >
+                    Preview PDF →
+                  </a>
+                </div>
+
+                {/* Calculator Preview */}
+                <div className="border-2 border-sw-blue rounded-xl p-6">
+                  <div className="text-4xl mb-4">📊</div>
+                  <h4 className="font-bold text-lg mb-2">Income Calculator</h4>
+                  <p className="text-sm text-sw-gray mb-4">
+                    Assess your income and insurance options
+                  </p>
+                  <a
+                    href="https://docs.google.com/spreadsheets/d/1k34MU0EnCIAnmFLwHLX9pT3DgOoG8u1nLnPOFw6yiM/edit"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sw-blue font-semibold hover:underline"
+                  >
+                    Preview Sheet →
+                  </a>
                 </div>
               </div>
             </div>
