@@ -17,10 +17,9 @@ const nextConfig = {
   },
   
   // Performance optimizations
-  experimental: {
-    optimizeCss: true,
-    scrollRestoration: true,
-  },
+  // experimental: {
+  //   scrollRestoration: true,
+  // },
   
   // Compression
   compress: true,
